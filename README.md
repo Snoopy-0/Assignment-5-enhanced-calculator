@@ -25,15 +25,6 @@ coverage report
 python -m app.calculator_repl
 ```
 
-## Environment
-
-Create a `.env` file or edit variables:
-
-```
-HISTORY_CSV=history.csv
-AUTOSAVE=true
-```
-
 ## Commands
 
 - `+ - * / ^ root <operands...>` perform operation
