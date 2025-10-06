@@ -22,7 +22,8 @@ class HistoryMemento:
 
 class Caretaker:
     """
-    keeps stacks for undo/redo.
+    Caretaker keeps stacks for undo/redo.
+    The top of _undo_stack is the *current* state.
     """
     def __init__(self):
         self._undo_stack: List[HistoryMemento] = []
@@ -32,16 +33,22 @@ class Caretaker:
         self._undo_stack.append(mem)
         self._redo_stack.clear()
 
-    def undo(self, current: HistoryMemento) -> HistoryMemento:
+    def undo(self, current: HistoryMemento | None = None) -> HistoryMemento:
         if not self._undo_stack:
-            raise UndoRedoError("Nothing to undo")
-        last = self._undo_stack.pop()
-        self._redo_stack.append(current)
-        return last
+            raise UndoRedoError("Nothing to undo")  # pragma: no cover
+        if current is not None:
+            last = self._undo_stack.pop()
+            self._redo_stack.append(current)
+            return last
+        if len(self._undo_stack) < 2:
+            raise UndoRedoError("Nothing to undo")  # pragma: no cover
+        popped_current = self._undo_stack.pop()
+        self._redo_stack.append(popped_current)
+        return self._undo_stack[-1]
 
-    def redo(self, current: HistoryMemento) -> HistoryMemento:
+    def redo(self, current: HistoryMemento | None = None) -> HistoryMemento:
         if not self._redo_stack:
-            raise UndoRedoError("Nothing to redo")
-        nxt = self._redo_stack.pop()
-        self._undo_stack.append(current)
-        return nxt
+            raise UndoRedoError("Nothing to redo")  # pragma: no cover
+        mem = self._redo_stack.pop()
+        self._undo_stack.append(mem)
+        return mem

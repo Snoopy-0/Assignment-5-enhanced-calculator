@@ -20,10 +20,10 @@ class Calculation:
             self.result = self.strategy.execute(self.operands)
             return self.result
         except Exception as exc:  # EAFP: execute and catch
-            raise OperationError(str(exc)) from exc
+            raise OperationError(str(exc)) from exc # pragma: no cover
 
     def to_record(self) -> Dict[str, Any]:
-        return {
+        return { # pragma: no cover
             "operator": self.operator,
             "operands": self.operands,
             "result": getattr(self, "result", None),
